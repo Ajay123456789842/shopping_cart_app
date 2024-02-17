@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:badges/badges.dart' as b;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,16 +12,12 @@ import 'package:shopping_cart_app/service.dart';
 
 class ProductList extends StatefulWidget {
   const ProductList({Key? key}) : super(key: key);
-
   @override
   State<ProductList> createState() => _ProductListState();
 }
 
 class _ProductListState extends State<ProductList> {
   DBHelper dbHelper = DBHelper();
-
-  
-
 
   @override
   Widget build(BuildContext context) {
@@ -41,15 +39,15 @@ class _ProductListState extends State<ProductList> {
           .then((value) {
         cart.addTotalPrice(p.price.toDouble());
         cart.addCounter();
-        print('Product Added to cart');
+        log('Product Added to cart');
       }).onError((error, stackTrace) {
-        print(error.toString());
+        log(error.toString());
       });
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar
       (
         SnackBar(content: Text('${p.title} successfully added to the cart'))
-        );
+      );
     }
 
     return Scaffold(
@@ -159,8 +157,6 @@ class _ProductListState extends State<ProductList> {
                             ),
 
                              ElevatedButton(
-                          // style: ElevatedButton.styleFrom(
-                          //     primary: Colors.blueGrey.shade900),
                           onPressed: () {
                             saveData(p);
                           },
@@ -168,7 +164,6 @@ class _ProductListState extends State<ProductList> {
                           ],
                         ),
                       ),
-                      
                       Text(
                             '${p.rating.toString()}*\n',
                         style: const TextStyle(

@@ -1,6 +1,4 @@
-import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
@@ -25,8 +23,7 @@ class DBHelper {
 
   _onCreate(Database db, int version) async {
     await db.execute(
-        'CREATE TABLE carts(id INTEGER PRIMARY KEY, productId VARCHAR UNIQUE, productName TEXT,  productPrice INTEGER, quantity INTEGER,  image TEXT,rating TEXT,discountPercentage TEXT)');
-        
+        'CREATE TABLE carts(id INTEGER PRIMARY KEY, productId VARCHAR UNIQUE, productName TEXT,  productPrice INTEGER, quantity INTEGER,  image TEXT,rating TEXT,discountPercentage TEXT)'); 
   }
 
   Future<Cart> insert(Cart cart) async {
@@ -53,16 +50,10 @@ class DBHelper {
         where: "productId = ?", whereArgs: [cart.productId]);
   }
 
-  Future<List<Cart>> getCartId(int id) async {
-    var dbClient = await database;
-    final List<Map<String, Object?>> queryIdResult =
-        await dbClient!.query('carts', where: 'id = ?', whereArgs: [id]);
-    return queryIdResult.map((e) => Cart.fromMap(e)).toList();
-  }
-
-  void deldatabase() async {
-    var db=await database;
-    db!.delete('carts');
-    print('database deleted');
-  }
+  // Future<List<Cart>> getCartId(int id) async {
+  //   var dbClient = await database;
+  //   final List<Map<String, Object?>> queryIdResult =
+  //       await dbClient!.query('carts', where: 'id = ?', whereArgs: [id]);
+  //   return queryIdResult.map((e) => Cart.fromMap(e)).toList();
+  // }
 }

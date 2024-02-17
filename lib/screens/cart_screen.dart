@@ -16,7 +16,6 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   DBHelper? dbHelper = DBHelper();
-  List<bool> tapped = [];
 
   @override
   void initState() {

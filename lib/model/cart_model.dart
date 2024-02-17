@@ -37,7 +37,7 @@ class Cart {
       'productId':productId,
       'productName': productName,
       'productPrice': productPrice,
-      'quantity': quantity?.value,
+      'quantity': quantity!.value,
       'image': image,
       'rating':rating,
       'discountPercentage':discountPercentage,

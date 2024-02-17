@@ -32,7 +32,8 @@ class Products {
       
     });
 
-    factory Products.fromJson(Map<String, dynamic> json) => Products(
+    factory Products.fromJson(Map<String, dynamic> json) => 
+    Products(
         id: json["id"],
         title: json["title"],
         description: json["description"],
