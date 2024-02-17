@@ -4,42 +4,43 @@ class Cart {
   late final int? id;
   final String? productId;
   final String? productName;
-  final int? initialPrice;
   final int? productPrice;
   final ValueNotifier<int>? quantity;
-  final String? unitTag;
   final String? image;
+  final String? rating;
+  final String? discountPercentage;
 
   Cart(
       {required this.id,
       required this.productId,
       required this.productName,
-      required this.initialPrice,
       required this.productPrice,
       required this.quantity,
-      required this.unitTag,
-      required this.image});
+      required this.image,
+      required this.rating,
+      required this.discountPercentage});
 
   Cart.fromMap(Map<dynamic, dynamic> data)
       : id = data['id'],
-        productId = data['productId'],
+      productId=data['productId'],
         productName = data['productName'],
-        initialPrice = data['initialPrice'],
         productPrice = data['productPrice'],
         quantity = ValueNotifier(data['quantity']),
-        unitTag = data['unitTag'],
-        image = data['image'];
+        image = data['image'],
+        rating = data['rating'],
+        discountPercentage=data['discountPercentage'];
+        
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'productId': productId,
+      'productId':productId,
       'productName': productName,
-      'initialPrice': initialPrice,
       'productPrice': productPrice,
       'quantity': quantity?.value,
-      'unitTag': unitTag,
       'image': image,
+      'rating':rating,
+      'discountPercentage':discountPercentage,
     };
   }
 

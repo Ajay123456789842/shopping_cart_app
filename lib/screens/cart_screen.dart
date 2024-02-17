@@ -1,4 +1,4 @@
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as b;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_cart_app/database/db_helper.dart';
@@ -32,7 +32,7 @@ class _CartScreenState extends State<CartScreen> {
         centerTitle: true,
         title: const Text('My Shopping Cart'),
         actions: [
-          Badge(
+          b.Badge(
             badgeContent: Consumer<CartProvider>(
               builder: (context, value, child) {
                 return Text(
@@ -42,7 +42,7 @@ class _CartScreenState extends State<CartScreen> {
                 );
               },
             ),
-            position: const BadgePosition(start: 30, bottom: 30),
+            position: b.BadgePosition.topEnd(),
             child: IconButton(
               onPressed: () {},
               icon: const Icon(Icons.shopping_cart),
@@ -83,7 +83,7 @@ class _CartScreenState extends State<CartScreen> {
                                   height: 80,
                                   width: 80,
                                   image:
-                                      AssetImage(provider.cart[index].image!),
+                                      NetworkImage(provider.cart[index].image!),
                                 ),
                                 SizedBox(
                                   width: 130,
@@ -111,22 +111,7 @@ class _CartScreenState extends State<CartScreen> {
                                                           FontWeight.bold)),
                                             ]),
                                       ),
-                                      RichText(
-                                        maxLines: 1,
-                                        text: TextSpan(
-                                            text: 'Unit: ',
-                                            style: TextStyle(
-                                                color: Colors.blueGrey.shade800,
-                                                fontSize: 16.0),
-                                            children: [
-                                              TextSpan(
-                                                  text:
-                                                      '${provider.cart[index].unitTag!}\n',
-                                                  style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                            ]),
-                                      ),
+                                      
                                       RichText(
                                         maxLines: 1,
                                         text: TextSpan(
@@ -143,34 +128,33 @@ class _CartScreenState extends State<CartScreen> {
                                                           FontWeight.bold)),
                                             ]),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                                ValueListenableBuilder<int>(
+                                       ValueListenableBuilder<int>(
                                     valueListenable:
                                         provider.cart[index].quantity!,
                                     builder: (context, val, child) {
                                       return PlusMinusButtons(
                                         addQuantity: () {
-                                          cart.addQuantity(
+                                          provider.addQuantity(
                                               provider.cart[index].id!);
                                           dbHelper!
                                               .updateQuantity(Cart(
                                                   id: index,
+                                                  rating: provider
+                                                      .cart[index].rating,
+                                                      discountPercentage: provider
+                                                      .cart[index].discountPercentage,
                                                   productId: index.toString(),
                                                   productName: provider
                                                       .cart[index].productName,
-                                                  initialPrice: provider
-                                                      .cart[index].initialPrice,
                                                   productPrice: provider
                                                       .cart[index].productPrice,
                                                   quantity: ValueNotifier(
                                                       provider.cart[index]
                                                           .quantity!.value),
-                                                  unitTag: provider
-                                                      .cart[index].unitTag,
+                                                  
                                                   image: provider
-                                                      .cart[index].image))
+                                                      .cart[index].image),
+                                                      )
                                               .then((value) {
                                             setState(() {
                                               cart.addTotalPrice(double.parse(
@@ -190,6 +174,10 @@ class _CartScreenState extends State<CartScreen> {
                                         text: val.toString(),
                                       );
                                     }),
+                                    ],
+                                  ),
+                                ),
+                               
                                 IconButton(
                                     onPressed: () {
                                       dbHelper!.deleteCartItem(
@@ -224,9 +212,28 @@ class _CartScreenState extends State<CartScreen> {
                   ValueListenableBuilder<int?>(
                       valueListenable: totalPrice,
                       builder: (context, val, child) {
+                       
+                        return ReusableWidget(
+                            title: 'Total-Price',
+                            value:r'$' + (val?.toStringAsFixed(2) ?? '0') ,
+                            );
+                      }),
+                      ValueListenableBuilder<int?>(
+                      valueListenable: totalPrice,
+                      builder: (context, val, child) {
+                        return ReusableWidget(
+                            title: 'GST(18%)',
+                            value:  val==0||val==null?'0':'${val*18/100}',
+                            );
+                      }),
+
+                       ValueListenableBuilder<int?>(
+                      valueListenable: totalPrice,
+                      builder: (context, val, child) {
                         return ReusableWidget(
                             title: 'Sub-Total',
-                            value: r'$' + (val?.toStringAsFixed(2) ?? '0'));
+                            value: val==0||val==null?'0':'${(val-val*18/100).toStringAsFixed(2)}',
+                            );
                       }),
                 ],
               );
@@ -234,35 +241,14 @@ class _CartScreenState extends State<CartScreen> {
           )
         ],
       ),
-      bottomNavigationBar: InkWell(
-        onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Payment Successful'),
-              duration: Duration(seconds: 2),
-            ),
-          );
-        },
-        child: Container(
-          color: Colors.yellow.shade600,
-          alignment: Alignment.center,
-          height: 50.0,
-          child: const Text(
-            'Proceed to Pay',
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ),
+      
     );
   }
 }
 
 class PlusMinusButtons extends StatelessWidget {
-  final VoidCallback deleteQuantity;
-  final VoidCallback addQuantity;
+  final void Function() deleteQuantity;
+  final void Function() addQuantity;
   final String text;
   const PlusMinusButtons(
       {Key? key,
@@ -285,25 +271,27 @@ class PlusMinusButtons extends StatelessWidget {
 
 class ReusableWidget extends StatelessWidget {
   final String title, value;
-  const ReusableWidget({Key? key, required this.title, required this.value});
+   ReusableWidget({Key? key, required this.title, required this.value});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.subtitle1,
+      child: 
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
+              Text(
+                value.toString(),
+                style: Theme.of(context).textTheme.subtitle2,
+              ),
+            ],
           ),
-          Text(
-            value.toString(),
-            style: Theme.of(context).textTheme.subtitle2,
-          ),
-        ],
-      ),
+       
     );
   }
 }

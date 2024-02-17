@@ -4,6 +4,7 @@ import 'package:shopping_cart_app/provider/cart_provider.dart';
 import 'package:shopping_cart_app/screens/product_list.dart';
 
 void main() {
+
   runApp(const MyApp());
 }
 

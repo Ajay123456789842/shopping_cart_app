@@ -5,12 +5,13 @@ import 'package:shopping_cart_app/model/cart_model.dart';
 
 class CartProvider with ChangeNotifier {
   DBHelper dbHelper = DBHelper();
+
   int _counter = 0;
   int _quantity = 1;
+  double _totalPrice = 0.0;
+
   int get counter => _counter;
   int get quantity => _quantity;
-
-  double _totalPrice = 0.0;
   double get totalPrice => _totalPrice;
 
   List<Cart> cart = [];
