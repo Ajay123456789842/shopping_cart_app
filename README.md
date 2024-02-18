@@ -2,7 +2,7 @@
 
 Explanation on how to create shopping cart screen
 
-## Getting Started
+## Getting Start
 
 This project is a starting point for a Flutter application.
 

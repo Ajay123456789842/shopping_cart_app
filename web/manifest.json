@@ -1,5 +1,5 @@
 {
-    "name": "shopping_cart_app",
+    "name" : "shopping_cart_app",
     "short_name": "shopping_cart_app",
     "start_url": ".",
     "display": "standalone",
