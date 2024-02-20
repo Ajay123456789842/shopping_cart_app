@@ -198,6 +198,7 @@ class _CartScreenState extends State<CartScreen> {
               },
             ),
           ),
+
           Consumer<CartProvider>(
             builder: (BuildContext context, value, Widget? child) {
               final ValueNotifier<int?> totalPrice = ValueNotifier(null);
@@ -211,29 +212,28 @@ class _CartScreenState extends State<CartScreen> {
                   ValueListenableBuilder<int?>(
                       valueListenable: totalPrice,
                       builder: (context, val, child) {
-                       
-                        return ReusableWidget(
-                            title: 'Total-Price',
-                            value:r'$' + (val?.toStringAsFixed(2) ?? '0') ,
-                            );
-                      }),
-                      ValueListenableBuilder<int?>(
-                      valueListenable: totalPrice,
-                      builder: (context, val, child) {
-                        return ReusableWidget(
+                        return Column(
+                          children: [
+                            ReusableWidget(
+                                title: 'Total-Price',
+                                value:r'$' + (val?.toStringAsFixed(2) ?? '0') ,
+                                ),
+                                
+                         ReusableWidget(
                             title: 'GST(18%)',
                             value:  val==0||val==null?'0':'${val*18/100}',
-                            );
-                      }),
+                            ),
+                    
 
-                       ValueListenableBuilder<int?>(
-                      valueListenable: totalPrice,
-                      builder: (context, val, child) {
-                        return ReusableWidget(
+                         ReusableWidget(
                             title: 'Sub-Total',
                             value: val==0||val==null?'0':'${(val-val*18/100).toStringAsFixed(2)}',
-                            );
+                            ),
+                      
+                          ],
+                        );
                       }),
+                      
                 ],
               );
             },
@@ -270,8 +270,7 @@ class PlusMinusButtons extends StatelessWidget {
 
 class ReusableWidget extends StatelessWidget {
   final String title, value;
-   ReusableWidget({Key? key, required this.title, required this.value});
-
+ const  ReusableWidget({Key? key, required this.title, required this.value}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Padding(

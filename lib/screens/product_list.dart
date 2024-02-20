@@ -2,8 +2,10 @@ import 'dart:developer';
 
 import 'package:badges/badges.dart' as b;
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:shopping_cart_app/model/products_model.dart';
+import 'package:shopping_cart_app/notification.dart';
 import 'package:shopping_cart_app/provider/cart_provider.dart';
 import 'package:shopping_cart_app/database/db_helper.dart';
 import 'package:shopping_cart_app/model/cart_model.dart';
@@ -18,6 +20,12 @@ class ProductList extends StatefulWidget {
 
 class _ProductListState extends State<ProductList> {
   DBHelper dbHelper = DBHelper();
+
+  @override
+  void initState() {
+     super.initState();
+    CartNotification.init();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +51,11 @@ class _ProductListState extends State<ProductList> {
       }).onError((error, stackTrace) {
         log(error.toString());
       });
+
+      //Notification
+
+   CartNotification.showNotification(p.title);
+  
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar
       (
