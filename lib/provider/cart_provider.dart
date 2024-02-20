@@ -54,6 +54,12 @@ class CartProvider with ChangeNotifier {
     return _counter;
   }
 
+   Future<int> getcartlistlen() async{
+     final v=await dbHelper.getCartList();
+     notifyListeners();
+     return  v.length;
+   }
+
   void addQuantity(int id) {
     final index = cart.indexWhere((element) => element.id == id);
     cart[index].quantity!.value = cart[index].quantity!.value + 1;

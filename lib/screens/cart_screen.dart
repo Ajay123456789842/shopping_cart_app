@@ -215,7 +215,7 @@ class _CartScreenState extends State<CartScreen> {
                         return Column(
                           children: [
                             ReusableWidget(
-                                title: 'Total-Price',
+                                title: 'Price',
                                 value:r'$' + (val?.toStringAsFixed(2) ?? '0') ,
                                 ),
                                 
@@ -226,8 +226,8 @@ class _CartScreenState extends State<CartScreen> {
                     
 
                          ReusableWidget(
-                            title: 'Sub-Total',
-                            value: val==0||val==null?'0':'${(val-val*18/100).toStringAsFixed(2)}',
+                            title: 'Total-price',
+                            value: val==0||val==null?'0':'${(val+val*18/100).toStringAsFixed(2)}',
                             ),
                       
                           ],

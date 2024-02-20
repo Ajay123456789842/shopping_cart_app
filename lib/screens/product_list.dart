@@ -20,11 +20,17 @@ class ProductList extends StatefulWidget {
 
 class _ProductListState extends State<ProductList> {
   DBHelper dbHelper = DBHelper();
+  int? count;
+
+  void load() async{
+    count=await context.read<CartProvider>().getcartlistlen();
+  }
 
   @override
   void initState() {
      super.initState();
     CartNotification.init();
+    load();
   }
 
   @override
@@ -54,7 +60,7 @@ class _ProductListState extends State<ProductList> {
 
       //Notification
 
-   CartNotification.showNotification(p.title);
+      CartNotification.showNotification(p.title);
   
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar
@@ -62,7 +68,6 @@ class _ProductListState extends State<ProductList> {
         SnackBar(content: Text('${p.title} successfully added to the cart'))
       );
     }
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -71,14 +76,17 @@ class _ProductListState extends State<ProductList> {
           b.Badge(
             badgeContent: Consumer<CartProvider>(
               builder: (context, value, child) {
+                print(count);
                 return Text(
                   value.getCounter().toString(),
                   style: const TextStyle(
                       color: Colors.white, fontWeight: FontWeight.bold),
                 );
+            
               },
             ),
             position:  b.BadgePosition.topEnd(),
+          
             child: IconButton(
               onPressed: () {
                 Navigator.push(
