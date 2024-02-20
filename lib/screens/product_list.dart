@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:badges/badges.dart' as b;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +9,8 @@ import 'package:shopping_cart_app/notification.dart';
 import 'package:shopping_cart_app/provider/cart_provider.dart';
 import 'package:shopping_cart_app/screens/cart_screen.dart';
 import 'package:shopping_cart_app/service.dart';
+
+import '../model/cart_model.dart';
 
 class ProductList extends StatefulWidget {
   const ProductList({Key? key}) : super(key: key);
@@ -25,7 +29,7 @@ class _ProductListState extends State<ProductList> {
   @override
   void initState() {
     super.initState();
-     load();
+    load();
   }
 
   @override
@@ -33,26 +37,26 @@ class _ProductListState extends State<ProductList> {
     final cart = Provider.of<CartProvider>(context);
     void saveData(Products p) async {
       try {
-        // dbHelper
-        //     .insert(
-        //   Cart(
-        //     id: p.id,
-        //     productId: p.id.toString(),
-        //     productName: p.title,
-        //     productPrice: p.price,
-        //     quantity: ValueNotifier(1),
-        //     image: p.thumbnail,
-        //     rating: p.rating.toString(),
-        //     discountPercentage: p.discountPercentage.toString(),
-        //   ),
-        // )
-        //     .then((value) {
-        //   cart.addTotalPrice(p.price.toDouble());
-        //   cart.addCounter();
-        //   log('Product Added to cart');
-        // }).onError((error, stackTrace) {
-        //   log(error.toString());
-        // });
+        String? message;
+        var result = await dbHelper.insert(
+          Cart(
+            id: p.id,
+            productId: p.id.toString(),
+            productName: p.title,
+            productPrice: p.price,
+            quantity: ValueNotifier(1),
+            image: p.thumbnail,
+            rating: p.rating.toString(),
+            discountPercentage: p.discountPercentage.toString(),
+          ),
+        );
+        if (result) {
+          cart.addTotalPrice(p.price.toDouble());
+          cart.addCounter();
+          log('Product Added to cart');
+        } else {
+          message = '${p.title} already added to the cart...';
+        }
 
         //Notification
 
@@ -64,7 +68,8 @@ class _ProductListState extends State<ProductList> {
 
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('${p.title} successfully added to the cart')));
+            content:
+                Text(message ?? '${p.title} successfully added to the cart')));
       } catch (e) {
         debugPrint('exception in ----------- $e');
       }
